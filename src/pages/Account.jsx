@@ -1,63 +1,21 @@
-import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Stack, Typography, Avatar, IconButton, TextField, Button, Paper, Chip, Snackbar } from '@mui/material'
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
+import { Box, Stack, Typography, Button, Avatar, Paper } from '@mui/material'
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded'
+import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded'
+import ColorLensRoundedIcon from '@mui/icons-material/ColorLensRounded'
 import { AppLayout } from '../components/layout/AppLayout'
 import { useAuth } from '../context/AuthContext'
 import { gradient } from '../theme'
 
-function EditableField({ label, value, onSave, type = 'text', mask = false }) {
-  const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState(value)
-
-  const save = () => {
-    if (draft.trim()) onSave(draft.trim())
-    setEditing(false)
-  }
-
-  return (
-    <Box sx={{ py: 1.5 }}>
-      <Typography sx={{ fontSize: 12, color: 'text.secondary', mb: 0.5 }}>{label}</Typography>
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-        {editing ? (
-          <TextField
-            autoFocus
-            size="small"
-            fullWidth
-            type={type}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && save()}
-          />
-        ) : (
-          <Typography sx={{ fontWeight: 600, flexGrow: 1 }}>
-            {mask ? '•'.repeat(10) : value}
-          </Typography>
-        )}
-        <Button
-          onClick={() => (editing ? save() : setEditing(true))}
-          sx={{
-            bgcolor: 'rgba(255,255,255,0.06)',
-            color: 'text.primary',
-            px: 2,
-            minWidth: 0,
-            '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
-          }}
-        >
-          {editing ? 'Save' : mask ? 'Change' : 'Edit'}
-        </Button>
-      </Stack>
-    </Box>
-  )
-}
-
 export function Account() {
-  const { user, updateAccount, signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const fileRef = useRef(null)
-  const [notice, setNotice] = useState('')
+
+  const handleSignOut = () => {
+    signOut()
+    navigate('/')
+  }
 
   const initials = (user?.name || '?')
     .split(' ')
@@ -66,159 +24,195 @@ export function Account() {
     .slice(0, 2)
     .toUpperCase()
 
-  const handleAvatarPick = (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => updateAccount({ avatar: reader.result })
-    reader.readAsDataURL(file)
-  }
-
-  const upgrade = () => {
-    updateAccount({ plan: user.plan === 'Pro' ? 'Free' : 'Pro' })
-    setNotice(user.plan === 'Pro' ? 'Downgraded to Free' : 'Upgraded to Pro!')
-  }
-
   return (
     <AppLayout withSidebar>
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 3 }}>
-        <IconButton onClick={() => navigate(-1)} sx={{ color: 'text.secondary' }}>
-          <ArrowBackRoundedIcon />
-        </IconButton>
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          My Account
+      <Box className="animate-fade-in-up">
+        <Typography variant="h4" sx={{ mb: 4, fontWeight: 700, fontSize: { xs: 26, md: 30 }, letterSpacing: '-0.02em' }}>
+          Account Settings
         </Typography>
-        <IconButton sx={{ color: 'text.secondary' }}>
-          <MoreHorizRoundedIcon />
-        </IconButton>
-      </Stack>
 
-      <Box sx={{ maxWidth: 480 }}>
-        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 3 }}>
-          <Box sx={{ position: 'relative' }}>
-            <Avatar src={user?.avatar || undefined} sx={{ width: 64, height: 64, bgcolor: '#a855f7', fontSize: 22 }}>
-              {!user?.avatar && initials}
-            </Avatar>
-            <IconButton
-              size="small"
-              onClick={() => fileRef.current?.click()}
-              sx={{
-                position: 'absolute',
-                bottom: -2,
-                right: -2,
-                width: 24,
-                height: 24,
-                background: gradient,
-                color: '#fff',
-                '&:hover': { background: gradient, opacity: 0.9 },
-              }}
-            >
-              <EditRoundedIcon sx={{ fontSize: 14 }} />
-            </IconButton>
-            <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleAvatarPick} />
-          </Box>
-          <Box>
-            <Typography sx={{ fontWeight: 700, fontSize: 18 }}>{user?.name}</Typography>
-            <Chip
-              label={user?.plan?.toUpperCase()}
-              size="small"
-              sx={{
-                mt: 0.5,
-                bgcolor: user?.plan === 'Pro' ? 'rgba(236,72,153,0.15)' : 'rgba(255,255,255,0.08)',
-                color: user?.plan === 'Pro' ? '#ec4899' : 'text.secondary',
-                fontWeight: 700,
-                fontSize: 11,
-              }}
-            />
-          </Box>
-        </Stack>
-
-        <Paper
-          elevation={0}
-          sx={{
-            bgcolor: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.06)',
-            borderRadius: 3,
-            px: 2,
-            mb: 2,
-            divider: '1px solid rgba(255,255,255,0.05)',
-          }}
-        >
-          <EditableField label="Display Name" value={user?.name} onSave={(v) => updateAccount({ name: v })} />
-          <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }} />
-          <EditableField label="Email" value={user?.email} onSave={(v) => updateAccount({ email: v })} />
-          <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }} />
-          <EditableField
-            label="Password"
-            value={user?.password}
-            mask
-            onSave={(v) => updateAccount({ password: v })}
-          />
-        </Paper>
-
-        <Paper
-          elevation={0}
-          sx={{
-            bgcolor: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.06)',
-            borderRadius: 3,
-            p: 2,
-            mb: 2,
-          }}
-        >
-          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-            <Box>
-              <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>Subscription</Typography>
-              <Typography sx={{ fontWeight: 600 }}>Tasks {user?.plan}</Typography>
-            </Box>
-            <Button
-              onClick={upgrade}
-              sx={{
-                background: gradient,
-                color: '#fff',
-                px: 2.5,
-                '&:hover': { background: gradient, opacity: 0.9 },
-              }}
-            >
-              {user?.plan === 'Pro' ? 'Manage' : 'Upgrade to Pro'}
-            </Button>
-          </Stack>
-          <Stack
-            direction="row"
-            onClick={() => setNotice('Pro benefits: unlimited collections, sharing, and more.')}
+        <Stack spacing={4} sx={{ maxWidth: 600 }}>
+          {/* Profile Section */}
+          <Paper
+            elevation={0}
             sx={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              mt: 2,
-              pt: 1.5,
-              borderTop: '1px solid rgba(255,255,255,0.05)',
-              cursor: 'pointer',
-              color: 'text.secondary',
-              '&:hover': { color: 'text.primary' },
+              p: 3,
+              borderRadius: '16px',
+              border: '1px solid rgba(0,0,0,0.06)',
+              bgcolor: '#fff',
             }}
           >
-            <Typography sx={{ fontSize: 13, fontWeight: 600 }}>See the Pro Benefits →</Typography>
-          </Stack>
-        </Paper>
+            <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
+              <Avatar
+                src={user?.avatar || undefined}
+                sx={{
+                  width: 80,
+                  height: 80,
+                  background: gradient,
+                  fontSize: 28,
+                  fontWeight: 700,
+                  boxShadow: '0 8px 24px rgba(197,179,230,0.3)',
+                }}
+              >
+                {!user?.avatar && initials}
+              </Avatar>
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography sx={{ fontWeight: 700, fontSize: 20, mb: 0.5 }}>
+                  {user?.name || 'User'}
+                </Typography>
+                <Typography sx={{ color: '#6b6b80', fontSize: 14 }}>
+                  {user?.email || 'No email provided'}
+                </Typography>
+              </Box>
+              <Button
+                sx={{
+                  px: 3,
+                  py: 1,
+                  bgcolor: 'rgba(0,0,0,0.04)',
+                  color: '#1a1a2e',
+                  fontWeight: 600,
+                  '&:hover': { bgcolor: 'rgba(0,0,0,0.08)' },
+                }}
+              >
+                Edit Profile
+              </Button>
+            </Stack>
+          </Paper>
 
-        <Button
-          fullWidth
-          onClick={() => {
-            signOut()
-            navigate('/')
-          }}
-          sx={{
-            bgcolor: 'rgba(255,255,255,0.06)',
-            color: 'text.primary',
-            py: 1.2,
-            '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
-          }}
-        >
-          Sign out
-        </Button>
+          {/* Settings Section */}
+          <Paper
+            elevation={0}
+            sx={{
+              borderRadius: '16px',
+              border: '1px solid rgba(0,0,0,0.06)',
+              bgcolor: '#fff',
+              overflow: 'hidden',
+            }}
+          >
+            <Box sx={{ p: 2, borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+              <Typography sx={{ fontWeight: 700, fontSize: 15, color: '#1a1a2e' }}>
+                Preferences
+              </Typography>
+            </Box>
+            <Stack>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  p: 2.5,
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid rgba(0,0,0,0.04)',
+                  '&:hover': { bgcolor: '#faf8f5' },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '10px',
+                    bgcolor: 'rgba(197,179,230,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <ColorLensRoundedIcon sx={{ color: '#c5b3e6', fontSize: 18 }} />
+                </Box>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography sx={{ fontWeight: 600, fontSize: 15 }}>Appearance</Typography>
+                  <Typography sx={{ fontSize: 13, color: '#6b6b80' }}>
+                    Light theme is currently active
+                  </Typography>
+                </Box>
+              </Stack>
+
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  p: 2.5,
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid rgba(0,0,0,0.04)',
+                  '&:hover': { bgcolor: '#faf8f5' },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '10px',
+                    bgcolor: 'rgba(244,160,181,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <NotificationsNoneRoundedIcon sx={{ color: '#f4a0b5', fontSize: 18 }} />
+                </Box>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography sx={{ fontWeight: 600, fontSize: 15 }}>Notifications</Typography>
+                  <Typography sx={{ fontSize: 13, color: '#6b6b80' }}>
+                    Configure email and push alerts
+                  </Typography>
+                </Box>
+              </Stack>
+
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  p: 2.5,
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: '#faf8f5' },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '10px',
+                    bgcolor: 'rgba(168,219,197,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <SettingsRoundedIcon sx={{ color: '#a8dbc5', fontSize: 18 }} />
+                </Box>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography sx={{ fontWeight: 600, fontSize: 15 }}>General</Typography>
+                  <Typography sx={{ fontSize: 13, color: '#6b6b80' }}>
+                    Manage data and account settings
+                  </Typography>
+                </Box>
+              </Stack>
+            </Stack>
+          </Paper>
+
+          {/* Danger Zone */}
+          <Box sx={{ px: 1 }}>
+            <Button
+              onClick={handleSignOut}
+              startIcon={<LogoutRoundedIcon />}
+              sx={{
+                color: '#e8a0a0',
+                fontWeight: 600,
+                px: 2,
+                py: 1,
+                borderRadius: '12px',
+                '&:hover': {
+                  bgcolor: 'rgba(232,160,160,0.08)',
+                },
+              }}
+            >
+              Sign out
+            </Button>
+          </Box>
+        </Stack>
       </Box>
-
-      <Snackbar open={!!notice} autoHideDuration={3000} onClose={() => setNotice('')} message={notice} />
     </AppLayout>
   )
 }

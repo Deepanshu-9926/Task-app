@@ -12,30 +12,52 @@ export function CollectionCard({ collection }) {
 
   return (
     <Paper
+      id={`collection-card-${collection.id}`}
       onClick={() => navigate(`/collections/${collection.id}`)}
       elevation={0}
       sx={{
         p: 2.5,
         cursor: 'pointer',
-        bgcolor: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        transition: 'transform 0.15s ease, background-color 0.15s ease',
-        '&:hover': { bgcolor: 'rgba(255,255,255,0.06)', transform: 'translateY(-2px)' },
+        bgcolor: '#fff',
+        border: '1px solid rgba(0,0,0,0.06)',
+        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        position: 'relative',
+        overflow: 'hidden',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: `0 12px 32px ${collection.color}18`,
+          borderColor: `${collection.color}40`,
+        },
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          background: `linear-gradient(90deg, ${collection.color}, ${collection.color}80)`,
+          opacity: 0,
+          transition: 'opacity 0.3s ease',
+        },
+        '&:hover::before': {
+          opacity: 1,
+        },
       }}
     >
       <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Box
           sx={{
-            width: 40,
-            height: 40,
-            borderRadius: 2,
-            bgcolor: collection.color,
+            width: 44,
+            height: 44,
+            borderRadius: '12px',
+            bgcolor: `${collection.color}18`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            transition: 'all 0.3s ease',
           }}
         >
-          <CollectionIcon icon={collection.icon} sx={{ color: '#fff', fontSize: 20 }} />
+          <CollectionIcon icon={collection.icon} sx={{ color: collection.color, fontSize: 22 }} />
         </Box>
         {collection.members > 1 && (
           <Stack
@@ -43,27 +65,29 @@ export function CollectionCard({ collection }) {
             spacing={0.5}
             sx={{
               alignItems: 'center',
-              bgcolor: 'rgba(255,255,255,0.06)',
-              borderRadius: 5,
+              bgcolor: 'rgba(0,0,0,0.04)',
+              borderRadius: '8px',
               px: 1,
               py: 0.25,
             }}
           >
-            <PeopleAltRoundedIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
-            <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
+            <PeopleAltRoundedIcon sx={{ fontSize: 13, color: '#9d9daa' }} />
+            <Typography sx={{ fontSize: 12, color: '#9d9daa', fontWeight: 600 }}>
               {collection.members}
             </Typography>
           </Stack>
         )}
       </Stack>
 
-      <Typography sx={{ mt: 2, fontWeight: 700, fontSize: 16 }}>{collection.name}</Typography>
+      <Typography sx={{ mt: 2, fontWeight: 700, fontSize: 16, color: '#1a1a2e' }}>
+        {collection.name}
+      </Typography>
 
-      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 0.5 }}>
-        <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
-          {percent === 100 ? 'All done!' : `${done}/${total} done`}
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
+        <Typography sx={{ fontSize: 13, color: '#9d9daa', fontWeight: 500 }}>
+          {percent === 100 ? '✨ All done!' : `${done}/${total} done`}
         </Typography>
-        <ProgressRing percent={percent} color={collection.color} size={26} />
+        <ProgressRing percent={percent} color={collection.color} size={28} />
       </Stack>
     </Paper>
   )

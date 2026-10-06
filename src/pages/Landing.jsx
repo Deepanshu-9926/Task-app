@@ -1,19 +1,12 @@
 import { useNavigate } from 'react-router-dom'
-
 import { Box, Stack, Typography, Button, Paper } from '@mui/material'
-
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
-
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded'
-
 import TodayRoundedIcon from '@mui/icons-material/TodayRounded'
-
 import InsightsRoundedIcon from '@mui/icons-material/InsightsRounded'
-
 import DevicesRoundedIcon from '@mui/icons-material/DevicesRounded'
-
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
 import { gradient } from '../theme'
-
 import { useAuth } from '../context/AuthContext'
 
 const features = [
@@ -21,21 +14,29 @@ const features = [
     icon: Inventory2RoundedIcon,
     title: 'Collections',
     description: 'Group your tasks into collections like School, Work, or Groceries.',
+    color: '#c5b3e6',
+    bg: 'rgba(197,179,230,0.12)',
   },
   {
     icon: TodayRoundedIcon,
     title: 'Daily Overview',
     description: "See exactly what's due today across every collection in one place.",
+    color: '#f4a0b5',
+    bg: 'rgba(244,160,181,0.12)',
   },
   {
     icon: InsightsRoundedIcon,
     title: 'Track Progress',
     description: 'Visual progress rings and stats show how much you have left to do.',
+    color: '#a8dbc5',
+    bg: 'rgba(168,219,197,0.12)',
   },
   {
     icon: DevicesRoundedIcon,
     title: 'Works Everywhere',
     description: 'Your tasks are saved right in the browser, ready whenever you are.',
+    color: '#a4c8e8',
+    bg: 'rgba(164,200,232,0.12)',
   },
 ]
 
@@ -53,11 +54,49 @@ export function Landing() {
     <Box
       sx={{
         minHeight: '100vh',
-        bgcolor: '#0b0b10',
+        bgcolor: '#faf8f5',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
+      {/* Decorative background shapes */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: -100,
+          right: -80,
+          width: 400,
+          height: 400,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(197,179,230,0.15) 0%, transparent 70%)',
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 200,
+          left: -120,
+          width: 350,
+          height: 350,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(244,160,181,0.12) 0%, transparent 70%)',
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: -50,
+          right: '20%',
+          width: 300,
+          height: 300,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(164,200,232,0.1) 0%, transparent 70%)',
+          zIndex: 0,
+        }}
+      />
+
       {/* Header */}
       <Stack
         direction="row"
@@ -65,38 +104,41 @@ export function Landing() {
           alignItems: 'center',
           justifyContent: 'space-between',
           position: 'relative',
+          zIndex: 1,
           px: { xs: 3, md: 6 },
-          py: 3,
+          py: 2.5,
         }}
       >
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
           <Box
             sx={{
-              width: 30,
-              height: 30,
-              borderRadius: 1.5,
+              width: 34,
+              height: 34,
+              borderRadius: '10px',
               background: gradient,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(197,179,230,0.3)',
             }}
           >
             <CheckRoundedIcon sx={{ fontSize: 18, color: '#fff' }} />
           </Box>
-
-          <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
-            tasks.
+          <Typography sx={{ fontWeight: 800, fontSize: 20, letterSpacing: '-0.02em' }}>
+            bloom
+            <Box component="span" sx={{ color: '#c5b3e6' }}>.</Box>
           </Typography>
-
           <Typography
             onClick={scrollToFeatures}
             sx={{
-              color: 'text.secondary',
-              ml: 2,
+              color: '#9d9daa',
+              ml: 3,
               cursor: 'pointer',
-              '&:hover': {
-                color: 'text.primary',
-              },
+              fontWeight: 500,
+              fontSize: 15,
+              transition: 'color 0.2s ease',
+              '&:hover': { color: '#1a1a2e' },
+              display: { xs: 'none', sm: 'block' },
             }}
           >
             Features
@@ -109,20 +151,28 @@ export function Landing() {
             sx={{
               cursor: 'pointer',
               fontWeight: 600,
+              fontSize: 15,
+              color: '#6b6b80',
+              transition: 'color 0.2s ease',
+              '&:hover': { color: '#1a1a2e' },
             }}
           >
             Log in
           </Typography>
-
           <Button
             onClick={() => navigate('/signin?mode=signup')}
             sx={{
               background: gradient,
               color: '#fff',
-              px: 2.5,
+              px: 3,
+              py: 1,
+              fontWeight: 600,
+              boxShadow: '0 4px 16px rgba(197,179,230,0.3)',
               '&:hover': {
                 background: gradient,
                 opacity: 0.9,
+                transform: 'translateY(-1px)',
+                boxShadow: '0 6px 20px rgba(197,179,230,0.4)',
               },
             }}
           >
@@ -135,133 +185,127 @@ export function Landing() {
       <Box
         sx={{
           position: 'relative',
-          overflow: 'hidden',
+          zIndex: 1,
         }}
       >
-        {/* Decorative background balls */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 80,
-            left: { xs: -50, md: '8%' },
-            width: 150,
-            height: 150,
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #ec4899, #a855f7)',
-            zIndex: 0,
-          }}
-        />
-
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 40,
-            right: { xs: -40, md: '12%' },
-            width: 130,
-            height: 130,
-            borderRadius: '50%',
-            bgcolor: '#1e1e28',
-            filter: 'blur(4px)',
-            zIndex: 0,
-          }}
-        />
-
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: -80,
-            right: { xs: -70, md: '8%' },
-            width: 220,
-            height: 220,
-            borderRadius: '50%',
-            background: gradient,
-            zIndex: 0,
-          }}
-        />
-
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 10,
-            left: { xs: 20, md: '18%' },
-            width: 70,
-            height: 70,
-            borderRadius: '50%',
-            bgcolor: '#15151d',
-            zIndex: 0,
-          }}
-        />
-
         <Stack
           sx={{
             alignItems: 'center',
             textAlign: 'center',
-            position: 'relative',
-            zIndex: 1,
             px: 3,
-            pt: { xs: 4, md: 8 },
-            pb: { xs: 8, md: 10 },
+            pt: { xs: 8, md: 12 },
+            pb: { xs: 10, md: 14 },
           }}
+          className="animate-fade-in-up"
         >
-          <Typography
-            variant="h3"
+          {/* Badge */}
+          <Box
             sx={{
-              fontSize: { xs: 34, md: 48 },
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
+              px: 2,
+              py: 0.75,
+              borderRadius: '20px',
+              bgcolor: 'rgba(197,179,230,0.12)',
+              border: '1px solid rgba(197,179,230,0.2)',
+              mb: 3,
             }}
           >
-            Tsks, just tasks.
+            <Box
+              sx={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                bgcolor: '#a8dbc5',
+                animation: 'pulse-soft 2s ease infinite',
+              }}
+            />
+            <Typography sx={{ fontSize: 13, fontWeight: 600, color: '#6b6b80' }}>
+              Simple & beautiful task management
+            </Typography>
+          </Box>
+
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: { xs: 40, sm: 52, md: 64 },
+              fontWeight: 800,
+              lineHeight: 1.1,
+              letterSpacing: '-0.03em',
+              maxWidth: 700,
+            }}
+          >
+            Organize your life,
+            <br />
             <Box
               component="span"
               sx={{
-                color: '#ec4899',
+                background: gradient,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                backgroundSize: '200% auto',
+                animation: 'gradient-shift 4s ease infinite',
               }}
             >
-              .
+              beautifully
             </Box>
+            <Box component="span" sx={{ color: '#c5b3e6' }}>.</Box>
           </Typography>
 
           <Typography
             sx={{
-              color: 'text.secondary',
-              mt: 2,
-              maxWidth: 420,
+              color: '#6b6b80',
+              mt: 3,
+              maxWidth: 440,
+              fontSize: { xs: 16, md: 18 },
+              lineHeight: 1.6,
+              fontWeight: 400,
             }}
           >
-            Keep track of the daily tasks in life and get that satisfaction upon completion.
+            Keep track of everyday tasks and feel the satisfaction of getting things done. 
+            Simple, elegant, and free.
           </Typography>
 
-          <Stack
-            direction="row"
-            spacing={2}
-            sx={{
-              mt: 4,
-            }}
-          >
+          <Stack direction="row" spacing={2} sx={{ mt: 5 }}>
             <Button
               size="large"
               onClick={() => navigate(user ? '/dashboard' : '/signin')}
+              endIcon={<ArrowForwardRoundedIcon />}
               sx={{
                 background: gradient,
                 color: '#fff',
-                px: 3,
+                px: 4,
+                py: 1.5,
+                fontSize: 16,
+                fontWeight: 600,
+                boxShadow: '0 8px 24px rgba(197,179,230,0.35)',
+                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                 '&:hover': {
                   background: gradient,
-                  opacity: 0.9,
+                  opacity: 0.95,
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 12px 32px rgba(197,179,230,0.45)',
                 },
               }}
             >
               Get Started
             </Button>
-
             <Button
               size="large"
               onClick={scrollToFeatures}
               sx={{
-                bgcolor: 'rgba(255,255,255,0.06)',
-                color: 'text.primary',
-                px: 3,
+                bgcolor: 'rgba(0,0,0,0.04)',
+                color: '#1a1a2e',
+                px: 4,
+                py: 1.5,
+                fontSize: 16,
+                fontWeight: 600,
+                border: '1px solid rgba(0,0,0,0.08)',
                 '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.1)',
+                  bgcolor: 'rgba(0,0,0,0.07)',
+                  transform: 'translateY(-1px)',
                 },
               }}
             >
@@ -276,26 +320,32 @@ export function Landing() {
         id="features"
         sx={{
           position: 'relative',
+          zIndex: 1,
           px: { xs: 3, md: 6 },
-          pb: 10,
+          pb: 12,
           pt: 4,
         }}
       >
         <Typography
-          variant="h4"
+          variant="h3"
           sx={{
             textAlign: 'center',
-            mb: 1,
+            mb: 1.5,
+            fontSize: { xs: 28, md: 36 },
+            letterSpacing: '-0.02em',
           }}
         >
-          Everything you need to stay on top
+          Everything you need
         </Typography>
 
         <Typography
           sx={{
-            color: 'text.secondary',
+            color: '#6b6b80',
             textAlign: 'center',
-            mb: 5,
+            mb: 6,
+            fontSize: 16,
+            maxWidth: 420,
+            mx: 'auto',
           }}
         >
           Simple tools that keep your tasks organized and moving forward.
@@ -314,57 +364,64 @@ export function Landing() {
             },
           }}
         >
-          {features.map((f) => (
+          {features.map((f, i) => (
             <Paper
               key={f.title}
               elevation={0}
+              className={`animate-fade-in-up stagger-${i + 1}`}
               sx={{
-                bgcolor: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 3,
-                p: 2.5,
+                bgcolor: '#fff',
+                border: '1px solid rgba(0,0,0,0.06)',
+                borderRadius: '16px',
+                p: 3,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: `0 12px 32px ${f.color}15`,
+                  borderColor: `${f.color}30`,
+                },
               }}
             >
               <Box
                 sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 2,
-                  background: gradient,
+                  width: 48,
+                  height: 48,
+                  borderRadius: '14px',
+                  bgcolor: f.bg,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  mb: 2,
+                  mb: 2.5,
                 }}
               >
-                <f.icon
-                  sx={{
-                    color: '#fff',
-                    fontSize: 20,
-                  }}
-                />
+                <f.icon sx={{ color: f.color, fontSize: 22 }} />
               </Box>
 
-              <Typography
-                sx={{
-                  fontWeight: 700,
-                  mb: 0.5,
-                }}
-              >
+              <Typography sx={{ fontWeight: 700, mb: 0.5, fontSize: 16 }}>
                 {f.title}
               </Typography>
 
-              <Typography
-                sx={{
-                  color: 'text.secondary',
-                  fontSize: 14,
-                }}
-              >
+              <Typography sx={{ color: '#6b6b80', fontSize: 14, lineHeight: 1.6 }}>
                 {f.description}
               </Typography>
             </Paper>
           ))}
         </Box>
+      </Box>
+
+      {/* Footer */}
+      <Box
+        sx={{
+          position: 'relative',
+          zIndex: 1,
+          textAlign: 'center',
+          py: 4,
+          borderTop: '1px solid rgba(0,0,0,0.06)',
+        }}
+      >
+        <Typography sx={{ fontSize: 13, color: '#9d9daa', fontWeight: 500 }}>
+          Made with 💜 — bloom.
+        </Typography>
       </Box>
     </Box>
   )

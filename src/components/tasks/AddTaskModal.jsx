@@ -6,6 +6,7 @@ import {
   Chip,
   Stack,
   Button,
+  Typography,
 } from '@mui/material'
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded'
 import EventRoundedIcon from '@mui/icons-material/EventRounded'
@@ -51,45 +52,60 @@ export function AddTaskModal({ open, onClose, defaultCollectionId }) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 3.5 }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 20, mb: 0.5, color: '#1a1a2e' }}>
+          Add Task
+        </Typography>
+        <Typography sx={{ fontSize: 14, color: '#9d9daa', mb: 3 }}>
+          What do you need to get done?
+        </Typography>
+
         <TextField
           autoFocus
           fullWidth
-          placeholder="Finish hero section"
+          placeholder="e.g. Finish hero section"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2.5 }}
         />
-        <Stack direction="row" spacing={1} sx={{ mb: 3, flexWrap: 'wrap', rowGap: 1 }}>
+        <Stack direction="row" spacing={1} sx={{ mb: 3.5, flexWrap: 'wrap', rowGap: 1 }}>
           <Chip
-            icon={<FolderRoundedIcon sx={{ fontSize: 16 }} />}
+            icon={<FolderRoundedIcon sx={{ fontSize: 15 }} />}
             label={selectedCollection ? selectedCollection.name : 'Collection'}
             onClick={cycleCollection}
             sx={{
-              bgcolor: selectedCollection ? `${selectedCollection.color}26` : 'action.selected',
-              color: selectedCollection ? selectedCollection.color : 'text.primary',
+              bgcolor: selectedCollection ? `${selectedCollection.color}15` : 'rgba(0,0,0,0.04)',
+              color: selectedCollection ? selectedCollection.color : '#6b6b80',
               fontWeight: 600,
+              border: selectedCollection ? `1px solid ${selectedCollection.color}30` : '1px solid transparent',
+              '&:hover': {
+                bgcolor: selectedCollection ? `${selectedCollection.color}22` : 'rgba(0,0,0,0.06)',
+              },
             }}
           />
           <Chip
-            icon={<EventRoundedIcon sx={{ fontSize: 16 }} />}
+            icon={<EventRoundedIcon sx={{ fontSize: 15 }} />}
             label="Today"
             onClick={() => setDueToday((v) => !v)}
             sx={{
-              bgcolor: dueToday ? 'rgba(20,184,166,0.15)' : 'action.selected',
-              color: dueToday ? '#14b8a6' : 'text.primary',
+              bgcolor: dueToday ? 'rgba(168,219,197,0.2)' : 'rgba(0,0,0,0.04)',
+              color: dueToday ? '#71b89a' : '#6b6b80',
               fontWeight: 600,
+              border: dueToday ? '1px solid rgba(168,219,197,0.4)' : '1px solid transparent',
+              '&:hover': { bgcolor: dueToday ? 'rgba(168,219,197,0.28)' : 'rgba(0,0,0,0.06)' },
             }}
           />
           <Chip
-            icon={<FlagRoundedIcon sx={{ fontSize: 16 }} />}
+            icon={<FlagRoundedIcon sx={{ fontSize: 15 }} />}
             label="Priority"
             onClick={() => setPriority((v) => !v)}
             sx={{
-              bgcolor: priority ? 'rgba(244,63,94,0.15)' : 'action.selected',
-              color: priority ? '#f43f5e' : 'text.primary',
+              bgcolor: priority ? 'rgba(244,160,181,0.2)' : 'rgba(0,0,0,0.04)',
+              color: priority ? '#d87a94' : '#6b6b80',
               fontWeight: 600,
+              border: priority ? '1px solid rgba(244,160,181,0.4)' : '1px solid transparent',
+              '&:hover': { bgcolor: priority ? 'rgba(244,160,181,0.28)' : 'rgba(0,0,0,0.06)' },
             }}
           />
         </Stack>
@@ -99,11 +115,13 @@ export function AddTaskModal({ open, onClose, defaultCollectionId }) {
             disabled={!text.trim() || !collectionId}
             sx={{
               px: 3,
-              py: 1,
+              py: 1.2,
               background: gradient,
               color: '#fff',
-              '&:hover': { opacity: 0.9, background: gradient },
-              '&.Mui-disabled': { background: 'rgba(255,255,255,0.08)', color: 'text.disabled' },
+              fontWeight: 600,
+              boxShadow: '0 4px 12px rgba(197,179,230,0.3)',
+              '&:hover': { opacity: 0.9, background: gradient, transform: 'translateY(-1px)' },
+              '&.Mui-disabled': { background: 'rgba(0,0,0,0.06)', color: '#b0b0be', boxShadow: 'none' },
             }}
           >
             Add Task
@@ -112,10 +130,11 @@ export function AddTaskModal({ open, onClose, defaultCollectionId }) {
             onClick={onClose}
             sx={{
               px: 3,
-              py: 1,
-              bgcolor: 'rgba(255,255,255,0.06)',
-              color: 'text.primary',
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
+              py: 1.2,
+              bgcolor: 'rgba(0,0,0,0.04)',
+              color: '#6b6b80',
+              fontWeight: 600,
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.08)' },
             }}
           >
             Cancel

@@ -21,16 +21,26 @@ export function NotificationsPopover({ anchorEl, onClose }) {
       onClose={onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      slotProps={{ paper: { sx: { mt: 1, width: 320, bgcolor: '#181820' } } }}
+      slotProps={{ paper: { sx: { mt: 1, width: 340, bgcolor: '#fff' } } }}
     >
-      <Box sx={{ p: 1.5 }}>
-        <Typography sx={{ fontWeight: 700, fontSize: 14, px: 1, pb: 1 }}>Notifications</Typography>
+      <Box sx={{ p: 2 }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 15, px: 0.5, pb: 1.5, color: '#1a1a2e' }}>
+          Notifications
+        </Typography>
         {dueItems.length === 0 ? (
-          <Typography sx={{ fontSize: 13, color: 'text.secondary', px: 1, py: 1 }}>
-            You're all caught up!
-          </Typography>
+          <Box
+            sx={{
+              py: 4,
+              textAlign: 'center',
+            }}
+          >
+            <Typography sx={{ fontSize: 28, mb: 1 }}>🎉</Typography>
+            <Typography sx={{ fontSize: 14, color: '#9d9daa', fontWeight: 500 }}>
+              You're all caught up!
+            </Typography>
+          </Box>
         ) : (
-          <Stack sx={{ maxHeight: 320, overflowY: 'auto' }}>
+          <Stack sx={{ maxHeight: 320, overflowY: 'auto' }} spacing={0.5}>
             {dueItems.map(({ collectionId, collectionName, color, icon, task }) => (
               <Stack
                 key={task.id}
@@ -42,34 +52,53 @@ export function NotificationsPopover({ anchorEl, onClose }) {
                 }}
                 sx={{
                   alignItems: 'center',
-                  px: 1,
-                  py: 1,
-                  borderRadius: 2,
+                  px: 1.5,
+                  py: 1.5,
+                  borderRadius: '12px',
                   cursor: 'pointer',
-                  '&:hover': { bgcolor: 'rgba(255,255,255,0.06)' },
+                  transition: 'all 0.15s ease',
+                  '&:hover': { bgcolor: `${color}12` },
                 }}
               >
                 <Box
                   sx={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: 1,
-                    bgcolor: color,
+                    width: 32,
+                    height: 32,
+                    borderRadius: '9px',
+                    bgcolor: `${color}20`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
                   }}
                 >
-                  <CollectionIcon icon={icon} sx={{ fontSize: 12, color: '#fff' }} />
+                  <CollectionIcon icon={icon} sx={{ fontSize: 15, color: color }} />
                 </Box>
-                <Box sx={{ minWidth: 0 }}>
-                  <Typography sx={{ fontSize: 14, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+                  <Typography
+                    sx={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
                     {task.text}
                   </Typography>
-                  <Typography sx={{ fontSize: 11, color: '#f43f5e' }}>
-                    {collectionName} &middot; {task.due}
-                  </Typography>
+                  <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+                    <Typography sx={{ fontSize: 12, color: '#6b6b80' }}>{collectionName}</Typography>
+                    <Typography sx={{ fontSize: 12, color: '#9d9daa' }}>·</Typography>
+                    <Typography
+                      sx={{
+                        fontSize: 12,
+                        color: '#e8a0a0',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {task.due}
+                    </Typography>
+                  </Stack>
                 </Box>
               </Stack>
             ))}

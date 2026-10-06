@@ -4,11 +4,20 @@ import { Box, Stack, Typography, Paper, IconButton } from '@mui/material'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
+import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded'
+import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded'
 import { AppLayout } from '../components/layout/AppLayout'
 import { CollectionIcon } from '../components/collections/icons'
 import { TaskRow } from '../components/tasks/TaskRow'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
+
+function getGreeting() {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 17) return 'Good afternoon'
+  return 'Good evening'
+}
 
 function OverviewSection({ collection, onToggle }) {
   const [expanded, setExpanded] = useState(true)
@@ -21,42 +30,64 @@ function OverviewSection({ collection, onToggle }) {
     <Paper
       elevation={0}
       sx={{
-        bgcolor: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        borderRadius: 3,
-        p: 2,
+        bgcolor: '#fff',
+        border: '1px solid rgba(0,0,0,0.06)',
+        borderRadius: '16px',
+        p: 2.5,
         mb: 2,
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          boxShadow: `0 4px 16px ${collection.color}12`,
+        },
       }}
     >
       <Stack
         direction="row"
         onClick={() => setExpanded((v) => !v)}
-        sx={{ alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', mb: expanded ? 1 : 0 }}
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+          mb: expanded ? 1.5 : 0,
+        }}
       >
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
           <Box
             sx={{
-              width: 28,
-              height: 28,
-              borderRadius: 1.5,
-              bgcolor: collection.color,
+              width: 32,
+              height: 32,
+              borderRadius: '10px',
+              bgcolor: `${collection.color}18`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <CollectionIcon icon={collection.icon} sx={{ fontSize: 15, color: '#fff' }} />
+            <CollectionIcon icon={collection.icon} sx={{ fontSize: 16, color: collection.color }} />
           </Box>
-          <Typography sx={{ fontWeight: 700 }}>{collection.name}</Typography>
+          <Box>
+            <Typography sx={{ fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
+              {collection.name}
+            </Typography>
+            <Typography sx={{ fontSize: 12, color: '#9d9daa' }}>
+              {dueTasks.length} task{dueTasks.length !== 1 ? 's' : ''} due
+            </Typography>
+          </Box>
         </Stack>
-        <IconButton size="small" sx={{ color: 'text.secondary' }}>
+        <IconButton
+          size="small"
+          sx={{
+            color: '#9d9daa',
+            '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
+          }}
+        >
           {expanded ? <ExpandLessRoundedIcon /> : <ExpandMoreRoundedIcon />}
         </IconButton>
       </Stack>
 
       {expanded && (
         <>
-          <Stack divider={<Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }} />}>
+          <Stack>
             {dueTasks.map((task) => (
               <TaskRow
                 key={task.id}
@@ -72,20 +103,69 @@ function OverviewSection({ collection, onToggle }) {
             onClick={() => navigate(`/collections/${collection.id}`)}
             sx={{
               alignItems: 'center',
-              mt: 1,
+              mt: 1.5,
               pt: 1.5,
-              borderTop: '1px solid rgba(255,255,255,0.05)',
+              borderTop: '1px solid rgba(0,0,0,0.05)',
               cursor: 'pointer',
               justifyContent: 'center',
-              color: 'text.secondary',
-              '&:hover': { color: 'text.primary' },
+              color: '#9d9daa',
+              transition: 'color 0.2s ease',
+              '&:hover': { color: collection.color },
             }}
           >
-            <Typography sx={{ fontSize: 13, fontWeight: 600 }}>Go to Collection</Typography>
+            <Typography sx={{ fontSize: 13, fontWeight: 600 }}>View Collection</Typography>
             <ArrowForwardRoundedIcon sx={{ fontSize: 15 }} />
           </Stack>
         </>
       )}
+    </Paper>
+  )
+}
+
+function StatCard({ label, value, sub, icon: Icon, color }) {
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        bgcolor: '#fff',
+        border: '1px solid rgba(0,0,0,0.06)',
+        borderRadius: '16px',
+        p: 2.5,
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          boxShadow: `0 4px 16px ${color}15`,
+          transform: 'translateY(-2px)',
+        },
+      }}
+    >
+      <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Box>
+          <Typography sx={{ color: '#9d9daa', fontSize: 13, fontWeight: 500, mb: 0.5 }}>
+            {label}
+          </Typography>
+          <Typography variant="h4" sx={{ fontWeight: 800, fontSize: 32, letterSpacing: '-0.02em' }}>
+            {value}
+          </Typography>
+          {sub && (
+            <Typography sx={{ color: '#9d9daa', fontSize: 13, mt: 0.5, fontWeight: 500 }}>
+              {sub}
+            </Typography>
+          )}
+        </Box>
+        <Box
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: '12px',
+            bgcolor: `${color}15`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Icon sx={{ fontSize: 20, color: color }} />
+        </Box>
+      </Stack>
     </Paper>
   )
 }
@@ -97,16 +177,42 @@ function Statistics({ collections }) {
 
   return (
     <Stack spacing={2}>
-      <Paper
-        elevation={0}
-        sx={{ bgcolor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3, p: 2.5 }}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 2,
+        }}
       >
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>Overall completion</Typography>
-        <Typography variant="h4" sx={{ mt: 0.5 }}>{rate}%</Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 0.5 }}>
-          {done} of {total} tasks done
-        </Typography>
-      </Paper>
+        <StatCard
+          label="Completion"
+          value={`${rate}%`}
+          sub={`${done} of ${total} tasks`}
+          icon={TrendingUpRoundedIcon}
+          color="#a8dbc5"
+        />
+        <StatCard
+          label="Collections"
+          value={collections.length}
+          sub={`${total} total tasks`}
+          icon={CalendarTodayRoundedIcon}
+          color="#c5b3e6"
+        />
+      </Box>
+
+      <Typography
+        sx={{
+          fontSize: 11,
+          fontWeight: 700,
+          color: '#9d9daa',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          mt: 1,
+        }}
+      >
+        By Collection
+      </Typography>
+
       {collections.map((c) => {
         const t = c.tasks.length
         const d = c.tasks.filter((x) => x.done).length
@@ -115,14 +221,55 @@ function Statistics({ collections }) {
           <Paper
             key={c.id}
             elevation={0}
-            sx={{ bgcolor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3, p: 2 }}
+            sx={{
+              bgcolor: '#fff',
+              border: '1px solid rgba(0,0,0,0.06)',
+              borderRadius: '14px',
+              p: 2.5,
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                boxShadow: `0 4px 16px ${c.color}12`,
+              },
+            }}
           >
-            <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
-              <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{c.name}</Typography>
-              <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>{d}/{t}</Typography>
+            <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1.5, alignItems: 'center' }}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '7px',
+                    bgcolor: `${c.color}18`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <CollectionIcon icon={c.icon} sx={{ fontSize: 13, color: c.color }} />
+                </Box>
+                <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{c.name}</Typography>
+              </Stack>
+              <Typography sx={{ fontSize: 13, color: '#9d9daa', fontWeight: 600 }}>
+                {d}/{t}
+              </Typography>
             </Stack>
-            <Box sx={{ height: 6, borderRadius: 3, bgcolor: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-              <Box sx={{ height: '100%', width: `${p}%`, bgcolor: c.color, borderRadius: 3 }} />
+            <Box
+              sx={{
+                height: 6,
+                borderRadius: '6px',
+                bgcolor: 'rgba(0,0,0,0.04)',
+                overflow: 'hidden',
+              }}
+            >
+              <Box
+                sx={{
+                  height: '100%',
+                  width: `${p}%`,
+                  bgcolor: c.color,
+                  borderRadius: '6px',
+                  transition: 'width 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+              />
             </Box>
           </Paper>
         )
@@ -140,30 +287,50 @@ export function Dashboard() {
 
   return (
     <AppLayout withSidebar>
-      <Typography sx={{ color: 'text.secondary', fontSize: 14, mb: 0.5 }}>Dashboard</Typography>
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Good morning,
-        <br />
-        {user?.name || firstName}
-      </Typography>
+      <Box className="animate-fade-in-up">
+        <Typography sx={{ color: '#9d9daa', fontSize: 14, mb: 0.5, fontWeight: 500 }}>
+          {getGreeting()} 👋
+        </Typography>
+        <Typography
+          variant="h4"
+          sx={{
+            mb: 3.5,
+            fontWeight: 700,
+            fontSize: { xs: 26, md: 30 },
+            letterSpacing: '-0.02em',
+          }}
+        >
+          {user?.name || firstName}
+        </Typography>
+      </Box>
 
-      <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ mb: 3 }}
+        className="animate-fade-in-up stagger-1"
+      >
         {[
-          ['overview', 'Daily Overview'],
-          ['stats', 'Statistics'],
+          ['overview', '📋 Daily Overview'],
+          ['stats', '📊 Statistics'],
         ].map(([key, label]) => (
           <Box
             key={key}
             onClick={() => setTab(key)}
             sx={{
-              px: 2,
+              px: 2.5,
               py: 0.75,
-              borderRadius: 10,
+              borderRadius: '10px',
               fontSize: 13,
               fontWeight: 600,
               cursor: 'pointer',
-              bgcolor: tab === key ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
-              color: tab === key ? 'text.primary' : 'text.secondary',
+              bgcolor: tab === key ? 'rgba(197,179,230,0.15)' : 'rgba(0,0,0,0.03)',
+              color: tab === key ? '#1a1a2e' : '#9d9daa',
+              border: tab === key ? '1px solid rgba(197,179,230,0.2)' : '1px solid transparent',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                bgcolor: tab === key ? 'rgba(197,179,230,0.15)' : 'rgba(0,0,0,0.05)',
+              },
             }}
           >
             {label}
@@ -172,16 +339,31 @@ export function Dashboard() {
       </Stack>
 
       {tab === 'overview' ? (
-        <Box sx={{ maxWidth: 480 }}>
+        <Box sx={{ maxWidth: 520 }} className="animate-fade-in-up stagger-2">
           {collections.map((c) => (
             <OverviewSection key={c.id} collection={c} onToggle={toggleTask} />
           ))}
           {collections.every((c) => c.tasks.filter((t) => !t.done && t.due).length === 0) && (
-            <Typography sx={{ color: 'text.secondary' }}>Nothing due today. Enjoy your day!</Typography>
+            <Paper
+              elevation={0}
+              sx={{
+                bgcolor: '#fff',
+                border: '1px solid rgba(0,0,0,0.06)',
+                borderRadius: '16px',
+                p: 4,
+                textAlign: 'center',
+              }}
+            >
+              <Typography sx={{ fontSize: 32, mb: 1 }}>🌸</Typography>
+              <Typography sx={{ fontWeight: 600, mb: 0.5 }}>Nothing due today</Typography>
+              <Typography sx={{ color: '#9d9daa', fontSize: 14 }}>
+                Enjoy your day! You're all caught up.
+              </Typography>
+            </Paper>
           )}
         </Box>
       ) : (
-        <Box sx={{ maxWidth: 480 }}>
+        <Box sx={{ maxWidth: 520 }} className="animate-fade-in-up stagger-2">
           <Statistics collections={collections} />
         </Box>
       )}

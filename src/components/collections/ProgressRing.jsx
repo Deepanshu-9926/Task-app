@@ -16,7 +16,7 @@ export function ProgressRing({ percent, color, size = 28 }) {
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="rgba(255,255,255,0.12)"
+          stroke="rgba(0,0,0,0.06)"
           strokeWidth={stroke}
         />
         <circle
@@ -29,6 +29,7 @@ export function ProgressRing({ percent, color, size = 28 }) {
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
+          style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}
         />
       </svg>
       {complete && (
@@ -41,9 +42,10 @@ export function ProgressRing({ percent, color, size = 28 }) {
             justifyContent: 'center',
             bgcolor: color,
             borderRadius: '50%',
+            animation: 'check-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both',
           }}
         >
-          <CheckRoundedIcon sx={{ fontSize: size * 0.6, color: '#fff' }} />
+          <CheckRoundedIcon sx={{ fontSize: size * 0.55, color: '#fff' }} />
         </Box>
       )}
     </Box>

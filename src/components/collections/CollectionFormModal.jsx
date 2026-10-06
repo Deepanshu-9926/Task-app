@@ -27,55 +27,77 @@ export function CollectionFormModal({ open, onClose, onCreate }) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <Box sx={{ p: 3 }}>
-        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>New Collection</Typography>
+      <Box sx={{ p: 3.5 }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 20, mb: 0.5, color: '#1a1a2e' }}>
+          New Collection
+        </Typography>
+        <Typography sx={{ fontSize: 14, color: '#9d9daa', mb: 3 }}>
+          Organize your tasks into a collection
+        </Typography>
+
         <TextField
           autoFocus
           fullWidth
-          placeholder="Collection name"
+          placeholder="e.g. Work Projects"
           value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && submit()}
-          sx={{ mb: 2 }}
+          sx={{ mb: 3 }}
         />
 
-        <Typography sx={{ fontSize: 13, color: 'text.secondary', mb: 1 }}>Icon</Typography>
-        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+        <Typography sx={{ fontSize: 13, color: '#6b6b80', mb: 1, fontWeight: 600 }}>
+          Icon
+        </Typography>
+        <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
           {iconChoices.map((choice) => (
             <Box
               key={choice}
               onClick={() => setIcon(choice)}
               sx={{
-                width: 36,
-                height: 36,
-                borderRadius: 2,
+                width: 40,
+                height: 40,
+                borderRadius: '10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                bgcolor: icon === choice ? color : 'rgba(255,255,255,0.06)',
+                bgcolor: icon === choice ? `${color}20` : 'rgba(0,0,0,0.04)',
                 border: icon === choice ? `2px solid ${color}` : '2px solid transparent',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  bgcolor: `${color}12`,
+                  transform: 'scale(1.05)',
+                },
               }}
             >
-              <CollectionIcon icon={choice} sx={{ fontSize: 18, color: '#fff' }} />
+              <CollectionIcon
+                icon={choice}
+                sx={{ fontSize: 18, color: icon === choice ? color : '#9d9daa' }}
+              />
             </Box>
           ))}
         </Stack>
 
-        <Typography sx={{ fontSize: 13, color: 'text.secondary', mb: 1 }}>Color</Typography>
-        <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
+        <Typography sx={{ fontSize: 13, color: '#6b6b80', mb: 1, fontWeight: 600 }}>
+          Color
+        </Typography>
+        <Stack direction="row" spacing={1.5} sx={{ mb: 3.5 }}>
           {colorChoices.map((choice) => (
             <Box
               key={choice}
               onClick={() => setColor(choice)}
               sx={{
-                width: 28,
-                height: 28,
+                width: 30,
+                height: 30,
                 borderRadius: '50%',
                 bgcolor: choice,
                 cursor: 'pointer',
-                outline: color === choice ? '2px solid #fff' : 'none',
-                outlineOffset: '2px',
+                outline: color === choice ? `2px solid ${choice}` : 'none',
+                outlineOffset: '3px',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  transform: 'scale(1.15)',
+                },
               }}
             />
           ))}
@@ -87,23 +109,26 @@ export function CollectionFormModal({ open, onClose, onCreate }) {
             disabled={!name.trim()}
             sx={{
               px: 3,
-              py: 1,
+              py: 1.2,
               background: gradient,
               color: '#fff',
-              '&:hover': { opacity: 0.9, background: gradient },
-              '&.Mui-disabled': { background: 'rgba(255,255,255,0.08)', color: 'text.disabled' },
+              fontWeight: 600,
+              boxShadow: '0 4px 12px rgba(197,179,230,0.3)',
+              '&:hover': { opacity: 0.9, background: gradient, transform: 'translateY(-1px)' },
+              '&.Mui-disabled': { background: 'rgba(0,0,0,0.06)', color: '#b0b0be', boxShadow: 'none' },
             }}
           >
-            Create
+            Create Collection
           </Button>
           <Button
             onClick={onClose}
             sx={{
               px: 3,
-              py: 1,
-              bgcolor: 'rgba(255,255,255,0.06)',
-              color: 'text.primary',
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
+              py: 1.2,
+              bgcolor: 'rgba(0,0,0,0.04)',
+              color: '#6b6b80',
+              fontWeight: 600,
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.08)' },
             }}
           >
             Cancel

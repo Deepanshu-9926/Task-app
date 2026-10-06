@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Box, Stack, Typography, IconButton, Menu, MenuItem } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded'
+import SortByAlphaRoundedIcon from '@mui/icons-material/SortByAlphaRounded'
 import { AppLayout } from '../components/layout/AppLayout'
 import { CollectionCard } from '../components/collections/CollectionCard'
 import { CollectionFormModal } from '../components/collections/CollectionFormModal'
@@ -22,52 +23,78 @@ export function Collections() {
 
   return (
     <AppLayout>
-      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4">Collections</Typography>
-        <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)} sx={{ color: 'text.secondary' }}>
-          <MoreHorizRoundedIcon />
-        </IconButton>
-        <Menu anchorEl={menuAnchor} open={!!menuAnchor} onClose={() => setMenuAnchor(null)}>
-          <MenuItem
-            onClick={() => {
-              setSortAlpha((v) => !v)
-              setMenuAnchor(null)
-            }}
-          >
-            {sortAlpha ? 'Unsort' : 'Sort by name'}
-          </MenuItem>
-        </Menu>
-      </Stack>
-
-      <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
-        {[
-          ['favourites', 'Favourites'],
-          ['all', 'All Collections'],
-        ].map(([key, label]) => (
-          <Box
-            key={key}
-            onClick={() => setTab(key)}
+      <Box className="animate-fade-in-up">
+        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, fontSize: { xs: 26, md: 30 }, letterSpacing: '-0.02em' }}>
+            Collections
+          </Typography>
+          <IconButton
+            onClick={(e) => setMenuAnchor(e.currentTarget)}
             sx={{
-              px: 2,
-              py: 0.75,
-              borderRadius: 10,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: 'pointer',
-              bgcolor: tab === key ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
-              color: tab === key ? 'text.primary' : 'text.secondary',
+              color: '#6b6b80',
+              bgcolor: 'rgba(0,0,0,0.03)',
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.06)' },
             }}
           >
-            {label}
-          </Box>
-        ))}
-      </Stack>
+            <MoreHorizRoundedIcon />
+          </IconButton>
+          <Menu
+            anchorEl={menuAnchor}
+            open={!!menuAnchor}
+            onClose={() => setMenuAnchor(null)}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            slotProps={{ paper: { sx: { mt: 1, minWidth: 160 } } }}
+          >
+            <MenuItem
+              onClick={() => {
+                setSortAlpha((v) => !v)
+                setMenuAnchor(null)
+              }}
+              sx={{ color: sortAlpha ? '#c5b3e6' : 'inherit' }}
+            >
+              <SortByAlphaRoundedIcon sx={{ fontSize: 18, mr: 1.5, color: sortAlpha ? '#c5b3e6' : '#9d9daa' }} />
+              {sortAlpha ? 'Alphabetical' : 'Sort by name'}
+            </MenuItem>
+          </Menu>
+        </Stack>
+
+        <Stack direction="row" spacing={1} sx={{ mb: 4 }}>
+          {[
+            ['favourites', '⭐️ Favourites'],
+            ['all', '📁 All Collections'],
+          ].map(([key, label]) => (
+            <Box
+              key={key}
+              onClick={() => setTab(key)}
+              sx={{
+                px: 2.5,
+                py: 0.75,
+                borderRadius: '10px',
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: 'pointer',
+                bgcolor: tab === key ? 'rgba(197,179,230,0.15)' : 'rgba(0,0,0,0.03)',
+                color: tab === key ? '#1a1a2e' : '#9d9daa',
+                border: tab === key ? '1px solid rgba(197,179,230,0.2)' : '1px solid transparent',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  bgcolor: tab === key ? 'rgba(197,179,230,0.15)' : 'rgba(0,0,0,0.05)',
+                },
+              }}
+            >
+              {label}
+            </Box>
+          ))}
+        </Stack>
+      </Box>
 
       <Box
+        className="animate-fade-in-up stagger-1"
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
-          gap: 2,
+          gap: 2.5,
         }}
       >
         {visible.map((c) => (
@@ -76,25 +103,40 @@ export function Collections() {
         <Box
           onClick={() => setFormOpen(true)}
           sx={{
-            border: '1px dashed rgba(255,255,255,0.15)',
-            borderRadius: 3,
+            border: '2px dashed rgba(0,0,0,0.08)',
+            borderRadius: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: 118,
+            minHeight: 124,
             cursor: 'pointer',
-            color: 'text.secondary',
-            '&:hover': { bgcolor: 'rgba(255,255,255,0.03)', color: 'text.primary' },
+            color: '#9d9daa',
+            transition: 'all 0.2s ease',
+            bgcolor: 'transparent',
+            '&:hover': {
+              bgcolor: 'rgba(0,0,0,0.02)',
+              color: '#1a1a2e',
+              borderColor: 'rgba(0,0,0,0.15)',
+              transform: 'translateY(-2px)',
+            },
           }}
         >
-          <AddRoundedIcon />
+          <AddRoundedIcon sx={{ fontSize: 28 }} />
         </Box>
       </Box>
 
       {visible.length === 0 && (
-        <Typography sx={{ color: 'text.secondary', mt: 4 }}>
-          No collections here yet.
-        </Typography>
+        <Box sx={{ mt: 6, textAlign: 'center' }} className="animate-fade-in-up stagger-2">
+          <Typography sx={{ fontSize: 40, mb: 2 }}>🪴</Typography>
+          <Typography sx={{ color: '#1a1a2e', fontWeight: 600, mb: 1 }}>
+            No collections found
+          </Typography>
+          <Typography sx={{ color: '#9d9daa', fontSize: 14 }}>
+            {tab === 'favourites'
+              ? 'Star a collection to see it here'
+              : 'Create a collection to get started'}
+          </Typography>
+        </Box>
       )}
 
       <CollectionFormModal
